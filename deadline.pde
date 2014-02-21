@@ -1,6 +1,8 @@
-int ground;  // ground height
 multiSpriteObject mainCharacter, backgroundSprites;
-final float characterSpeed = 10.0;
+nonmovingObject light, clothes;
+int ground;
+final float characterSpeed = 30.0;
+boolean inzone;
 
 void setup() {
   size(1600, 900);
@@ -9,22 +11,33 @@ void setup() {
   imageMode(CENTER);
 
   ground = 691;
+  inzone = false;
 
   initBackground();
+  initNonmovableObjects();
   initMainCharacter();  
 }
 
 void draw() { 
   stroke(0);
   
-  backgroundSprites.draw();
+  updateBackground();
+  drawBackground();
 
   // hit left of background
   if(mainCharacter.getX()+mainCharacter.getHspeed() < 10)
-    backgroundSprites.setFrame(backgroundSprites.getFrame() + 1);
+  {
+    boolean succ = backgroundSprites.setFrame(backgroundSprites.getFrame() + 1);
+    if(succ)
+      mainCharacter.setX(width - 50);
+  }
   // hit right of background
   else if(width-50 < mainCharacter.getX()+mainCharacter.getHspeed())
-    backgroundSprites.setFrame(backgroundSprites.getFrame() - 1);
+  {
+    boolean succ = backgroundSprites.setFrame(backgroundSprites.getFrame() - 1);
+    if(succ)
+      mainCharacter.setX(10);
+  }
   // normal movement
   else
     mainCharacter.update();
@@ -52,3 +65,59 @@ void keyReleased() {
     mainCharacter.setHspeed(0.0);
 }
 
+void drawBackground()
+{
+  backgroundSprites.draw();
+  switch(backgroundSprites.getFrame()){
+    case 0:
+      light.draw();
+      break;
+    case 1:
+      clothes.draw();
+    default:
+      break;
+  }
+}
+
+void updateBackground()
+{
+  switch(backgroundSprites.getFrame()){
+    case 0:
+      if(mainCharacter.getX() <= light.getX() + 200 && 
+         light.getX() <= mainCharacter.getX())
+      {
+        light.setShouldDraw(true);
+        inzone = true;
+      }
+      else
+      {
+        light.setShouldDraw(false);
+        inzone = false;
+      }
+      break;
+    case 1:
+      if(mainCharacter.getX() <= clothes.getX() + 50 && 
+         clothes.getX() - 50 <= mainCharacter.getX())
+        {
+          if(inzone)
+            break;
+
+          if(mainCharacter.getFrame() == 0)
+          {
+            clothes.setShouldDraw(false);
+            mainCharacter.setFrame(2);
+          }
+          else
+          {
+            clothes.setShouldDraw(true);
+            mainCharacter.setFrame(0); 
+          }
+          inzone = true;
+        }
+      else
+        inzone = false;
+      break;
+    default:
+      break;
+  }
+}
