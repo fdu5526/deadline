@@ -1,6 +1,12 @@
 void initBackground()
 {
-  backImage = loadImage("background1.jpg");
+  PImage[] sprites = new PImage[1];
+
+  for(int i = 0; i < sprites.length; i++)
+  {
+    sprites[i] = loadImage("background"+(i+1)+".jpg");
+  }
+  backgroundSprites = new multiSpriteObject(0, height, sprites);
 }
 
 void initMainCharacter()
@@ -11,5 +17,5 @@ void initMainCharacter()
   {
     sprites[i] = loadImage("main_"+(i+1)+".png");
   }
-  mainCharacter = new MainCharacter(width/3, ground, sprites);
+  mainCharacter = new multiSpriteObject(width/3, ground, sprites);
 }

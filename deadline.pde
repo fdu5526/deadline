@@ -1,6 +1,5 @@
 int ground;  // ground height
-MainCharacter mainCharacter;
-PImage backImage;
+multiSpriteObject mainCharacter, backgroundSprites;
 final float characterSpeed = 10.0;
 
 void setup() {
@@ -9,45 +8,47 @@ void setup() {
 
   imageMode(CENTER);
 
-  ground = 410;
+  ground = 691;
 
   initBackground();
   initMainCharacter();  
 }
 
 void draw() { 
-  drawBackground();
   stroke(0);
-  mainCharacter.update();
+  
+  backgroundSprites.draw();
+
+  // hit left of background
+  if(mainCharacter.getX()+mainCharacter.getHspeed() < 10)
+    backgroundSprites.setFrame(backgroundSprites.getFrame() + 1);
+  // hit right of background
+  else if(width-50 < mainCharacter.getX()+mainCharacter.getHspeed())
+    backgroundSprites.setFrame(backgroundSprites.getFrame() - 1);
+  // normal movement
+  else
+    mainCharacter.update();
+
   mainCharacter.draw();
-
-}
-
-/**
- * draws the background
- */
-void drawBackground()
-{
-  image(backImage,width/2,height/2);
 }
 
 void keyPressed() {
   if(key == 'a')
   {
-    mainCharacter.setSpeed(-1.0 * characterSpeed);
+    mainCharacter.setHspeed(-1.0 * characterSpeed);
     mainCharacter.setDirection(-1.0);
   }
   else if(key == 'd')
   {
-    mainCharacter.setSpeed(characterSpeed);
+    mainCharacter.setHspeed(characterSpeed);
     mainCharacter.setDirection(1.0);
   }
 }
 
 void keyReleased() {
   if(key == 'a')
-    mainCharacter.setSpeed(0.0);
+    mainCharacter.setHspeed(0.0);
   else if(key == 'd')
-    mainCharacter.setSpeed(0.0);
+    mainCharacter.setHspeed(0.0);
 }
 

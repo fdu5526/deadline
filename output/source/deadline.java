@@ -15,8 +15,7 @@ import java.io.IOException;
 public class deadline extends PApplet {
 
 int ground;  // ground height
-MainCharacter mainCharacter;
-PImage backImage;
+multiSpriteObject mainCharacter, backgroundSprites;
 final float characterSpeed = 10.0f;
 
 public void setup() {
@@ -25,51 +24,56 @@ public void setup() {
 
   imageMode(CENTER);
 
-  ground = 410;
+  ground = 691;
 
   initBackground();
   initMainCharacter();  
 }
 
 public void draw() { 
-  drawBackground();
   stroke(0);
-  mainCharacter.update();
+  
+  backgroundSprites.draw();
+
+  if(mainCharacter.getX()+mainCharacter.getHspeed() < 50)
+    backgroundSprites.setFrame(backgroundSprites.getFrame() + 1);
+  else if(width-10 < mainCharacter.getX()+mainCharacter.getHspeed())
+    backgroundSprites.setFrame(backgroundSprites.getFrame() - 1);
+  else
+    mainCharacter.update();
+
   mainCharacter.draw();
-
-}
-
-/**
- * draws the background
- */
-public void drawBackground()
-{
-  image(backImage,width/2,height/2);
 }
 
 public void keyPressed() {
   if(key == 'a')
   {
-    mainCharacter.setSpeed(-1.0f * characterSpeed);
+    mainCharacter.setHspeed(-1.0f * characterSpeed);
     mainCharacter.setDirection(-1.0f);
   }
   else if(key == 'd')
   {
-    mainCharacter.setSpeed(characterSpeed);
-    mainCharacter.setDirection(-1.0f);
+    mainCharacter.setHspeed(characterSpeed);
+    mainCharacter.setDirection(1.0f);
   }
 }
 
 public void keyReleased() {
   if(key == 'a')
-    mainCharacter.setSpeed(0.0f);
+    mainCharacter.setHspeed(0.0f);
   else if(key == 'd')
-    mainCharacter.setSpeed(0.0f);
+    mainCharacter.setHspeed(0.0f);
 }
 
 public void initBackground()
 {
-  backImage = loadImage("background1.jpg");
+  PImage[] sprites = new PImage[1];
+
+  for(int i = 0; i < sprites.length; i++)
+  {
+    sprites[i] = loadImage("background"+(i+1)+".jpg");
+  }
+  backgroundSprites = new multiSpriteObject(0, height, sprites);
 }
 
 public void initMainCharacter()
@@ -80,14 +84,14 @@ public void initMainCharacter()
   {
     sprites[i] = loadImage("main_"+(i+1)+".png");
   }
-  mainCharacter = new MainCharacter(width/3, ground, sprites);
+  mainCharacter = new multiSpriteObject(width/3, ground, sprites);
 }
-class MainCharacter{
+class multiSpriteObject{
 	PImage[] spritesArray;
 	int x, y, spriteFrame;
 	float hspeed, direction;
 
-	MainCharacter(int _x, int _y, PImage[] _sprites)
+	multiSpriteObject(int _x, int _y, PImage[] _sprites)
 	{
 		x = _x;
 		y = _y;
@@ -97,7 +101,7 @@ class MainCharacter{
 		direction = 1.0f;
 	}
 
-	public void setSpeed(float s)
+	public void setHspeed(float s)
 	{
 		hspeed = s;
 	}
@@ -113,19 +117,51 @@ class MainCharacter{
 			spriteFrame = f;
 	}
 
+	public int getFrame()
+	{
+		return spriteFrame;
+	}
+
 	public void update()
 	{
-		// no going off screen
-		if((0 < x-hspeed && x-hspeed < width))
-			x += hspeed;
+		x += hspeed;
+	}
+
+	public int getX()
+	{
+		return x;
+	}
+
+	public float getHspeed()
+	{
+		return hspeed;
 	}
 
 	public void draw(){
 		pushMatrix();
-		translate(x, y);
+		translate(x + (spritesArray[spriteFrame].width / 2.0f), 
+				  y - (spritesArray[spriteFrame].height / 2.0f));
 		scale(direction, 1.0f);
-
 		image(spritesArray[spriteFrame], 0, 0);
+		popMatrix();
+	}
+}
+class nonmovingObject{
+	PImage sprite;
+	int x, y;
+
+	nonmovingObject(int _x, int _y, PImage _sprite)
+	{
+		x = _x;
+		y = _y;
+		sprite = _sprite;
+	}
+
+	public void draw(){
+		pushMatrix();
+		translate(x - (sprite.width / 2.0f), 
+				  y - (sprite.height / 2.0f));
+		image(sprite, 0, 0);
 		popMatrix();
 	}
 }
