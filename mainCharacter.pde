@@ -40,7 +40,6 @@ class MainCharacter{
 		pushMatrix();
 		translate(x, y);
 		scale(direction, 1.0);
-
 		image(spritesArray[spriteFrame], 0, 0);
 		popMatrix();
 	}
