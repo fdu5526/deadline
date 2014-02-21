@@ -19,25 +19,27 @@ nonmovingObject light, clothes;
 int ground;
 final float characterSpeed = 30.0f;
 boolean inzone;
+ParticleSystem[] snowParticleSystem;
+
 
 public void setup() {
   size(1600, 900);
   frameRate(30);
 
   imageMode(CENTER);
+  noStroke();
 
   ground = 691;
   inzone = false;
 
   initBackground();
   initNonmovableObjects();
+  initParticleSystem();
   initMainCharacter();  
 }
 
 public void draw() { 
-  stroke(0);
   
-  updateBackground();
   drawBackground();
 
   // hit left of background
@@ -59,6 +61,8 @@ public void draw() {
     mainCharacter.update();
 
   mainCharacter.draw();
+
+  updateBackground();
 }
 
 public void keyPressed() {
@@ -99,6 +103,8 @@ public void updateBackground()
 {
   switch(backgroundSprites.getFrame()){
     case 0:
+
+      // for light
       if(mainCharacter.getX() <= light.getX() + 200 && 
          light.getX() <= mainCharacter.getX())
       {
@@ -112,6 +118,8 @@ public void updateBackground()
       }
       break;
     case 1:
+
+      // for clothes
       if(mainCharacter.getX() <= clothes.getX() + 50 && 
          clothes.getX() - 50 <= mainCharacter.getX())
         {
@@ -133,6 +141,12 @@ public void updateBackground()
       else
         inzone = false;
       break;
+    case 2:
+      for(int i = 0; i < snowParticleSystem.length; i++)
+      {
+        snowParticleSystem[i].addParticle();
+        snowParticleSystem[i].run();
+      }
     default:
       break;
   }
@@ -164,11 +178,20 @@ public void initMainCharacter()
   }
   mainCharacter = new multiSpriteObject(width/3, ground, sprites);
 }
+
+public void initParticleSystem()
+{
+  snowParticleSystem = new ParticleSystem[4];
+  for(int i = 0; i < snowParticleSystem.length; i++)
+    snowParticleSystem[i] = new ParticleSystem(
+                              new PVector(i*width/(snowParticleSystem.length - 1), -150), 10.0f);
+}
 class multiSpriteObject{
 	PImage[] spritesArray;
 	int x, y, spriteFrame;
 	float hspeed, direction;
 	float spriteScale;
+	boolean canMove;
 
 	multiSpriteObject(int _x, int _y, PImage[] _sprites)
 	{
@@ -179,6 +202,7 @@ class multiSpriteObject{
 		hspeed = 0.0f;
 		direction = 1.0f;
 		spriteScale = 1.0f;
+		canMove = true;
 	}
 
 	public void setHspeed(float s)
@@ -217,11 +241,6 @@ class multiSpriteObject{
 		return spriteFrame;
 	}
 
-	public void update()
-	{
-		x += hspeed;
-	}
-
 	public int getX()
 	{
 		return x;
@@ -232,6 +251,22 @@ class multiSpriteObject{
 		return hspeed;
 	}
 
+	public boolean getCanMove()
+	{
+		return canMove;
+	}
+
+	public void setCanMove(boolean b)
+	{
+		canMove = b;
+	}
+
+	public void update()
+	{
+		if(canMove)
+			x += hspeed;
+	}
+	
 	public void draw(){
 		pushMatrix();
 		translate(x + (spritesArray[spriteFrame].width / 2.0f), 
@@ -275,22 +310,17 @@ class nonmovingObject{
 		popMatrix();
 	}
 }
-/*
- * thanks to Daniel Shiffman for his example code
- */
-
 class Particle {
   PVector location;
   PVector velocity;
   PVector acceleration;
-  float lifespan;
+  float lifespan, particleScale;
 
-  Particle(PVector l) {
-    acceleration = new PVector(0,random(0.1f, 0.6f));
-    float x = random(-8,8);
-    float y = random(-10,2);
-    velocity = new PVector(x,y);
+  Particle(PVector l, float s) {
+    acceleration = new PVector(0,0.1f);
+    velocity = new PVector(random(-5,5),1.0f);
     location = l.get();
+    particleScale = s;
     lifespan = 255.0f;
   }
 
@@ -303,19 +333,20 @@ class Particle {
   public void update() {
     velocity.add(acceleration);
     location.add(velocity);
-    lifespan -= 2.0f;
+    lifespan -= 1.0f;
   }
 
   // Method to display
   public void display() {
-    stroke(255,0, 0, lifespan);
-    fill(255, 0, 0, lifespan);
-    ellipse(location.x,location.y,8,8);
+    fill(255, lifespan);
+
+    ellipse(location.x,location.y,
+            particleScale, particleScale);
   }
   
   // Is the particle still useful?
   public boolean isDead() {
-    if (lifespan < 0.0f) {
+    if (lifespan < 0.0f || location.y >= ground) {
       return true;
     } else {
       return false;
@@ -330,22 +361,28 @@ class Particle {
 // An ArrayList is used to manage the list of Particles 
 
 class ParticleSystem {
-  Particle[] particles;
+  ArrayList<Particle> particles;
   PVector origin;
+  float particleScale;
 
-  ParticleSystem(PVector location) {
+  ParticleSystem(PVector location, float s) {
     origin = location.get();
-    particles = new Particle[400];
+    particles = new ArrayList<Particle>();
+    particleScale = s;
   }
 
-  public void explode() {
-    for(int i = 0; i < 400; i++)
-      particles[i] = new Particle(origin);
+  public void addParticle() {
+    particles.add(new Particle(origin, particleScale));
   }
 
   public void run() {
-    for (int i = particles.length-1; i >= 0; i--)
-      particles[i].run();
+    for (int i = particles.size()-1; i >= 0; i--) {
+      Particle p = particles.get(i);
+      p.run();
+      if (p.isDead()) {
+        particles.remove(i);
+      }
+    }
   }
 }
 public float sign(float f)

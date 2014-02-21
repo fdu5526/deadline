@@ -3,25 +3,27 @@ nonmovingObject light, clothes;
 int ground;
 final float characterSpeed = 30.0;
 boolean inzone;
+ParticleSystem[] snowParticleSystem;
+
 
 void setup() {
   size(1600, 900);
   frameRate(30);
 
   imageMode(CENTER);
+  noStroke();
 
   ground = 691;
   inzone = false;
 
   initBackground();
   initNonmovableObjects();
+  initParticleSystem();
   initMainCharacter();  
 }
 
 void draw() { 
-  stroke(0);
   
-  updateBackground();
   drawBackground();
 
   // hit left of background
@@ -43,6 +45,8 @@ void draw() {
     mainCharacter.update();
 
   mainCharacter.draw();
+
+  updateBackground();
 }
 
 void keyPressed() {
@@ -83,6 +87,8 @@ void updateBackground()
 {
   switch(backgroundSprites.getFrame()){
     case 0:
+
+      // for light
       if(mainCharacter.getX() <= light.getX() + 200 && 
          light.getX() <= mainCharacter.getX())
       {
@@ -96,6 +102,8 @@ void updateBackground()
       }
       break;
     case 1:
+
+      // for clothes
       if(mainCharacter.getX() <= clothes.getX() + 50 && 
          clothes.getX() - 50 <= mainCharacter.getX())
         {
@@ -117,6 +125,12 @@ void updateBackground()
       else
         inzone = false;
       break;
+    case 2:
+      for(int i = 0; i < snowParticleSystem.length; i++)
+      {
+        snowParticleSystem[i].addParticle();
+        snowParticleSystem[i].run();
+      }
     default:
       break;
   }

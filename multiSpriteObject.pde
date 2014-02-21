@@ -3,6 +3,7 @@ class multiSpriteObject{
 	int x, y, spriteFrame;
 	float hspeed, direction;
 	float spriteScale;
+	boolean canMove;
 
 	multiSpriteObject(int _x, int _y, PImage[] _sprites)
 	{
@@ -13,6 +14,7 @@ class multiSpriteObject{
 		hspeed = 0.0;
 		direction = 1.0;
 		spriteScale = 1.0;
+		canMove = true;
 	}
 
 	void setHspeed(float s)
@@ -51,11 +53,6 @@ class multiSpriteObject{
 		return spriteFrame;
 	}
 
-	void update()
-	{
-		x += hspeed;
-	}
-
 	int getX()
 	{
 		return x;
@@ -66,6 +63,22 @@ class multiSpriteObject{
 		return hspeed;
 	}
 
+	boolean getCanMove()
+	{
+		return canMove;
+	}
+
+	void setCanMove(boolean b)
+	{
+		canMove = b;
+	}
+
+	void update()
+	{
+		if(canMove)
+			x += hspeed;
+	}
+	
 	void draw(){
 		pushMatrix();
 		translate(x + (spritesArray[spriteFrame].width / 2.0), 

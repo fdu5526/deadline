@@ -25,3 +25,11 @@ void initMainCharacter()
   }
   mainCharacter = new multiSpriteObject(width/3, ground, sprites);
 }
+
+void initParticleSystem()
+{
+  snowParticleSystem = new ParticleSystem[4];
+  for(int i = 0; i < snowParticleSystem.length; i++)
+    snowParticleSystem[i] = new ParticleSystem(
+                              new PVector(i*width/(snowParticleSystem.length - 1), -150), 10.0);
+}
