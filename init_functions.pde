@@ -1,6 +1,6 @@
 void initBackground()
 {
-  PImage[] sprites = new PImage[3];
+  PImage[] sprites = new PImage[5];
 
   for(int i = 0; i < sprites.length; i++)
   {
@@ -31,5 +31,5 @@ void initParticleSystem()
   snowParticleSystem = new ParticleSystem[4];
   for(int i = 0; i < snowParticleSystem.length; i++)
     snowParticleSystem[i] = new ParticleSystem(
-                              new PVector(i*width/(snowParticleSystem.length - 1), -150), 10.0);
+                              new PVector(i*width/(snowParticleSystem.length - 1), -150), 10.0, false);
 }

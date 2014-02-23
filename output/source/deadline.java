@@ -16,7 +16,7 @@ public class deadline extends PApplet {
 
 multiSpriteObject mainCharacter, backgroundSprites;
 nonmovingObject light, clothes;
-int ground;
+final int ground = 691;
 final float characterSpeed = 30.0f;
 boolean inzone;
 ParticleSystem[] snowParticleSystem;
@@ -29,7 +29,6 @@ public void setup() {
   imageMode(CENTER);
   noStroke();
 
-  ground = 691;
   inzone = false;
 
   initBackground();
@@ -47,14 +46,20 @@ public void draw() {
   {
     boolean succ = backgroundSprites.setFrame(backgroundSprites.getFrame() + 1);
     if(succ)
+    {
       mainCharacter.setX(width - 50);
+      updateScale();
+    }
   }
   // hit right of background
   else if(width-50 < mainCharacter.getX()+mainCharacter.getHspeed())
   {
     boolean succ = backgroundSprites.setFrame(backgroundSprites.getFrame() - 1);
     if(succ)
+    {
       mainCharacter.setX(10);
+      updateScale();
+    }
   }
   // normal movement
   else
@@ -68,12 +73,14 @@ public void draw() {
 public void keyPressed() {
   if(key == 'a')
   {
-    mainCharacter.setHspeed(-1.0f * characterSpeed);
+    mainCharacter.setHspeed(-1.0f * characterSpeed * 
+                            mainCharacter.getSpriteScale());
     mainCharacter.setDirection(-1.0f);
   }
   else if(key == 'd')
   {
-    mainCharacter.setHspeed(characterSpeed);
+    mainCharacter.setHspeed(characterSpeed * 
+                            mainCharacter.getSpriteScale());
     mainCharacter.setDirection(1.0f);
   }
 }
@@ -101,6 +108,14 @@ public void drawBackground()
 
 public void updateBackground()
 {
+
+  // keep particle system running
+  for(int i = 0; i < snowParticleSystem.length; i++)
+  {
+    snowParticleSystem[i].addParticle();
+    snowParticleSystem[i].run();
+  }
+
   switch(backgroundSprites.getFrame()){
     case 0:
 
@@ -116,6 +131,12 @@ public void updateBackground()
         light.setShouldDraw(false);
         inzone = false;
       }
+
+      for(int i = 0; i < snowParticleSystem.length; i++)
+      {
+        snowParticleSystem[i].setShouldDraw(false);
+      }
+
       break;
     case 1:
 
@@ -140,20 +161,53 @@ public void updateBackground()
         }
       else
         inzone = false;
-      break;
-    case 2:
+
       for(int i = 0; i < snowParticleSystem.length; i++)
       {
-        snowParticleSystem[i].addParticle();
-        snowParticleSystem[i].run();
+        snowParticleSystem[i].setShouldDraw(false);
+      }
+
+      break;
+    case 2: case 3:
+      for(int i = 0; i < snowParticleSystem.length; i++)
+      {
+        snowParticleSystem[i].setShouldDraw(true);
       }
     default:
       break;
   }
 }
+
+public void updateScale()
+{
+  switch(backgroundSprites.getFrame()) {
+    
+    case 3:
+      mainCharacter.setSpriteScale(0.75f);
+      mainCharacter.setY(ground + 76);
+
+      for(int i = 0; i < snowParticleSystem.length; i++)
+        snowParticleSystem[i].setParticleWidth(7.5f);
+      break;
+    case 4:
+      mainCharacter.setSpriteScale(0.3f);
+      mainCharacter.setY(ground + 129);
+
+      for(int i = 0; i < snowParticleSystem.length; i++)
+        snowParticleSystem[i].setParticleWidth(6.0f);
+      break;
+
+    default:
+      mainCharacter.setSpriteScale(1.0f);
+      mainCharacter.setY(ground);
+
+      for(int i = 0; i < snowParticleSystem.length; i++)
+        snowParticleSystem[i].setParticleWidth(10.0f);
+  }
+}
 public void initBackground()
 {
-  PImage[] sprites = new PImage[3];
+  PImage[] sprites = new PImage[5];
 
   for(int i = 0; i < sprites.length; i++)
   {
@@ -184,7 +238,7 @@ public void initParticleSystem()
   snowParticleSystem = new ParticleSystem[4];
   for(int i = 0; i < snowParticleSystem.length; i++)
     snowParticleSystem[i] = new ParticleSystem(
-                              new PVector(i*width/(snowParticleSystem.length - 1), -150), 10.0f);
+                              new PVector(i*width/(snowParticleSystem.length - 1), -150), 10.0f, false);
 }
 class multiSpriteObject{
 	PImage[] spritesArray;
@@ -215,6 +269,11 @@ class multiSpriteObject{
 		x = _x;
 	}
 
+	public void setY(int _y)
+	{
+		y = _y;
+	}
+
 	public void setDirection(float d)
 	{
 		direction = d;
@@ -223,6 +282,11 @@ class multiSpriteObject{
 	public void setSpriteScale(float s)
 	{
 		spriteScale = s;
+	}
+
+	public float getSpriteScale()
+	{
+		return spriteScale;
 	}
 
 	public boolean setFrame(int f)
@@ -269,8 +333,8 @@ class multiSpriteObject{
 	
 	public void draw(){
 		pushMatrix();
-		translate(x + (spritesArray[spriteFrame].width / 2.0f), 
-				  y - (spritesArray[spriteFrame].height / 2.0f));
+		translate(x + (spritesArray[spriteFrame].width * spriteScale / 2.0f), 
+				  y - (spritesArray[spriteFrame].height * spriteScale / 2.0f));
 		scale(direction * spriteScale, spriteScale);
 		image(spritesArray[spriteFrame], 0, 0);
 		popMatrix();
@@ -314,13 +378,13 @@ class Particle {
   PVector location;
   PVector velocity;
   PVector acceleration;
-  float lifespan, particleScale;
+  float lifespan, particleWidth;
 
   Particle(PVector l, float s) {
     acceleration = new PVector(0,0.1f);
     velocity = new PVector(random(-5,5),1.0f);
     location = l.get();
-    particleScale = s;
+    particleWidth = s;
     lifespan = 255.0f;
   }
 
@@ -336,17 +400,22 @@ class Particle {
     lifespan -= 1.0f;
   }
 
+  public void setParticleWidth(float s)
+  {
+    particleWidth = s;
+  }
+
   // Method to display
   public void display() {
     fill(255, lifespan);
 
     ellipse(location.x,location.y,
-            particleScale, particleScale);
+            particleWidth, particleWidth);
   }
   
   // Is the particle still useful?
   public boolean isDead() {
-    if (lifespan < 0.0f || location.y >= ground) {
+    if (lifespan < 0.0f) {
       return true;
     } else {
       return false;
@@ -363,22 +432,39 @@ class Particle {
 class ParticleSystem {
   ArrayList<Particle> particles;
   PVector origin;
-  float particleScale;
+  float particleWidth;
+  boolean shouldDraw;
 
-  ParticleSystem(PVector location, float s) {
+  ParticleSystem(PVector location, float s, boolean b) {
     origin = location.get();
     particles = new ArrayList<Particle>();
-    particleScale = s;
+    particleWidth = s;
+    shouldDraw = b;
   }
 
   public void addParticle() {
-    particles.add(new Particle(origin, particleScale));
+    particles.add(new Particle(origin, particleWidth));
+  }
+
+  public void setShouldDraw(boolean b)
+  {
+    shouldDraw = b;
+  }
+
+  public void setParticleWidth(float s)
+  {
+    particleWidth = s;
   }
 
   public void run() {
     for (int i = particles.size()-1; i >= 0; i--) {
       Particle p = particles.get(i);
-      p.run();
+      p.setParticleWidth(particleWidth);
+
+      p.update();
+      if(shouldDraw)
+        p.display();
+
       if (p.isDead()) {
         particles.remove(i);
       }

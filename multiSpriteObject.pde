@@ -27,6 +27,11 @@ class multiSpriteObject{
 		x = _x;
 	}
 
+	void setY(int _y)
+	{
+		y = _y;
+	}
+
 	void setDirection(float d)
 	{
 		direction = d;
@@ -35,6 +40,11 @@ class multiSpriteObject{
 	void setSpriteScale(float s)
 	{
 		spriteScale = s;
+	}
+
+	float getSpriteScale()
+	{
+		return spriteScale;
 	}
 
 	boolean setFrame(int f)
@@ -81,8 +91,8 @@ class multiSpriteObject{
 	
 	void draw(){
 		pushMatrix();
-		translate(x + (spritesArray[spriteFrame].width / 2.0), 
-				  y - (spritesArray[spriteFrame].height / 2.0));
+		translate(x + (spritesArray[spriteFrame].width * spriteScale / 2.0), 
+				  y - (spritesArray[spriteFrame].height * spriteScale / 2.0));
 		scale(direction * spriteScale, spriteScale);
 		image(spritesArray[spriteFrame], 0, 0);
 		popMatrix();
