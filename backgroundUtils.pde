@@ -9,10 +9,13 @@ void drawBackground()
     case 0:
       drawPanicWord();
       light.draw();
+      spacebarHint1.draw();
+      adHint.draw();
       break;
     case 1:
       drawPanicWord();
       clothes.draw();
+      spacebarHint2.draw();
       break;
     case 2:
       drawPanicWord();
@@ -96,7 +99,7 @@ void updateBackground()
       }
 
       break;
-    case 3: case 4: case 5: case 6:
+    case 2: case 3: case 4: case 5: case 6:
 
       for(int i = 0; i < snowParticleSystem.length; i++)
       {

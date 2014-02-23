@@ -1,6 +1,7 @@
 class nonmovingObject{
 	PImage sprite;
 	int x, y;
+	float lifeStartMillis;
 	boolean shouldDraw;
 
 	nonmovingObject(int _x, int _y, PImage _sprite)

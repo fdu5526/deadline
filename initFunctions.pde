@@ -13,6 +13,9 @@ void initNonmovableObjects()
 {
   light = new nonmovingObject(677, 474, loadImage("light.png"));
   clothes = new nonmovingObject(980, 552, loadImage("clothes.png"));
+  spacebarHint1 = new nonmovingObject(743, 291, loadImage("spacebar.png"));
+  spacebarHint2 = new nonmovingObject(865, 111, loadImage("spacebar.png"));
+  adHint = new nonmovingObject(width/6, 291, loadImage("adbutton.png"));
 }
 
 void initMainCharacter()
@@ -23,7 +26,7 @@ void initMainCharacter()
   {
     sprites[i] = loadImage("main_"+(i)+".png");
   }
-  mainCharacter = new multiSpriteObject(width/3, ground, sprites);
+  mainCharacter = new multiSpriteObject(width/6, ground, sprites);
 }
 
 void initParticleSystem()
@@ -75,9 +78,5 @@ void initSourceCode()
         codeString = sb.toString();
     }
     catch (IOException e){}
-
-
     sourceCode = new SourceCode(codeString);
-
-
 }

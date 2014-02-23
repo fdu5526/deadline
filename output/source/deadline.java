@@ -19,14 +19,14 @@ public class deadline extends PApplet {
 
 
 multiSpriteObject mainCharacter, backgroundSprites;
-nonmovingObject light, clothes;
+nonmovingObject light, clothes, spacebarHint1, spacebarHint2, adHint;
 ParticleSystem[] snowParticleSystem;
 PanicWord[] panicWords;
 float newPanicWordTimer;
 SourceCode sourceCode;
 
 final int ground = 691;
-final float characterSpeed = 30.0f;
+final float characterSpeed = 15.0f;
 final int panicWordLifespan = 500;
 final PFont impactFont = createFont("Impact",16,true);
 final PFont codeFont = createFont("Consolas",16,true);
@@ -168,10 +168,13 @@ public void drawBackground()
     case 0:
       drawPanicWord();
       light.draw();
+      spacebarHint1.draw();
+      adHint.draw();
       break;
     case 1:
       drawPanicWord();
       clothes.draw();
+      spacebarHint2.draw();
       break;
     case 2:
       drawPanicWord();
@@ -255,7 +258,7 @@ public void updateBackground()
       }
 
       break;
-    case 3: case 4: case 5: case 6:
+    case 2: case 3: case 4: case 5: case 6:
 
       for(int i = 0; i < snowParticleSystem.length; i++)
       {
@@ -398,9 +401,7 @@ public void keyPressed() {
   {
     if(satDown)
     {
-      for(int i = 0; i < 50; i++)
       sourceCode.increaseIndex();
-
     }
     else
     {
@@ -435,6 +436,7 @@ public void keyReleased() {
     mainCharacter.setHspeed(0.0f);
   userInteracted = false;
 }
+
 public void initBackground()
 {
   PImage[] sprites = new PImage[7];
@@ -450,6 +452,9 @@ public void initNonmovableObjects()
 {
   light = new nonmovingObject(677, 474, loadImage("light.png"));
   clothes = new nonmovingObject(980, 552, loadImage("clothes.png"));
+  spacebarHint1 = new nonmovingObject(743, 291, loadImage("spacebar.png"));
+  spacebarHint2 = new nonmovingObject(865, 111, loadImage("spacebar.png"));
+  adHint = new nonmovingObject(width/6, 291, loadImage("adbutton.png"));
 }
 
 public void initMainCharacter()
@@ -460,7 +465,7 @@ public void initMainCharacter()
   {
     sprites[i] = loadImage("main_"+(i)+".png");
   }
-  mainCharacter = new multiSpriteObject(width/3, ground, sprites);
+  mainCharacter = new multiSpriteObject(width/6, ground, sprites);
 }
 
 public void initParticleSystem()
@@ -512,11 +517,7 @@ public void initSourceCode()
         codeString = sb.toString();
     }
     catch (IOException e){}
-
-
     sourceCode = new SourceCode(codeString);
-
-
 }
 class multiSpriteObject{
 	PImage[] spritesArray;
@@ -621,6 +622,7 @@ class multiSpriteObject{
 class nonmovingObject{
 	PImage sprite;
 	int x, y;
+	float lifeStartMillis;
 	boolean shouldDraw;
 
 	nonmovingObject(int _x, int _y, PImage _sprite)

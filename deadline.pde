@@ -1,14 +1,14 @@
 import ddf.minim.*;
 
 multiSpriteObject mainCharacter, backgroundSprites;
-nonmovingObject light, clothes;
+nonmovingObject light, clothes, spacebarHint1, spacebarHint2, adHint;
 ParticleSystem[] snowParticleSystem;
 PanicWord[] panicWords;
 float newPanicWordTimer;
 SourceCode sourceCode;
 
 final int ground = 691;
-final float characterSpeed = 30.0;
+final float characterSpeed = 15.0;
 final int panicWordLifespan = 500;
 final PFont impactFont = createFont("Impact",16,true);
 final PFont codeFont = createFont("Consolas",16,true);
