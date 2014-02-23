@@ -42,7 +42,7 @@ class PanicWord{
 		if(!(millis() - lifeStartMillis <= panicWordLifespan*2))
 			return;
 
-		textFont(createFont("Impact",16,true), fontSize);
+		textFont(impactFont, fontSize);
 		fill(r,g,b, t);
 		text(word, x, y);
 	}

@@ -3,7 +3,9 @@ void keyPressed() {
   if(key == 'a')
   {
     if(satDown)
-    {}
+    {
+      sourceCode.increaseIndex();
+    }
     else
     {
       mainCharacter.setHspeed(-1.0 * characterSpeed * 
@@ -14,7 +16,9 @@ void keyPressed() {
   else if(key == 'd')
   {
     if(satDown)
-    {}
+    {
+      sourceCode.increaseIndex();
+    }
     else
     {
       mainCharacter.setHspeed(characterSpeed * 

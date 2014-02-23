@@ -59,3 +59,25 @@ void initPanicWords()
     panicWords[i] = new PanicWord(panicStrings[i]);
   }
 }
+
+void initSourceCode()
+{
+  String codeString = "";
+  try {
+        BufferedReader br = createReader("deadline.java");
+        StringBuilder sb = new StringBuilder();
+        String line = br.readLine();
+
+        while (line != null) {
+            sb.append(line + "\n");
+            line = br.readLine();
+        }
+        codeString = sb.toString();
+    }
+    catch (IOException e){}
+
+
+    sourceCode = new SourceCode(codeString);
+
+
+}

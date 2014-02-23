@@ -5,10 +5,13 @@ nonmovingObject light, clothes;
 ParticleSystem[] snowParticleSystem;
 PanicWord[] panicWords;
 float newPanicWordTimer;
+SourceCode sourceCode;
 
 final int ground = 691;
 final float characterSpeed = 30.0;
 final int panicWordLifespan = 500;
+final PFont impactFont = createFont("Impact",16,true);
+final PFont codeFont = createFont("Consolas",16,true);
 
 boolean userInteracted, satDown;
 
@@ -28,6 +31,7 @@ void setup() {
   initBackground();
   initMusicFile();
   initPanicWords();
+  initSourceCode();
   initNonmovableObjects();
   initParticleSystem();
   initMainCharacter();
@@ -39,6 +43,7 @@ void draw() {
   
   drawBackground();
 
+  // loop music
   if(!(intenseMusic.isPlaying()))
     intenseMusic.rewind();
   if(!(pianoMusic.isPlaying()))
@@ -73,12 +78,15 @@ void draw() {
   else
     mainCharacter.update();
 
+  // draws the main character
   mainCharacter.draw();
 
+  // only draw source code if we are sitting down
   if(satDown)
   {
     drawSourceCode();
   }
 
+  // update states of everything in background
   updateBackground();
 }
