@@ -183,37 +183,37 @@ public void updateBackground()
  */
 public void updateScale()
 {
-  switch(backgroundSprites.getFrame()) {
-    
-    case 3:
-      mainCharacter.setSpriteScale(0.75f);
-      mainCharacter.setY(ground + 76);
+  float mainScale = 1.0f;
+  float snowWidth = 10.0f;
+  int extraGround = 0;
 
-      for(int i = 0; i < snowParticleSystem.length; i++)
-        snowParticleSystem[i].setParticleWidth(7.5f);
+  switch(backgroundSprites.getFrame()) {
+    case 3:
+      mainScale = 0.75f;
+      extraGround = 76;
+      snowWidth = 7.5f;
       break;
     case 4:
-      mainCharacter.setSpriteScale(0.55f);
-      mainCharacter.setY(ground + 103);
-
-      for(int i = 0; i < snowParticleSystem.length; i++)
-        snowParticleSystem[i].setParticleWidth(5.5f);
+      mainScale = 0.55f;
+      extraGround = 103;
+      snowWidth = 7.0f;
       break;
-    case 5:
-      mainCharacter.setSpriteScale(0.3f);
-      mainCharacter.setY(ground + 129);
 
-      for(int i = 0; i < snowParticleSystem.length; i++)
-        snowParticleSystem[i].setParticleWidth(6.0f);
+    case 5:
+      mainScale = 0.3f;
+      extraGround = 129;
+      snowWidth = 6.0f;
       break;
 
     default:
-      mainCharacter.setSpriteScale(1.0f);
-      mainCharacter.setY(ground);
-
-      for(int i = 0; i < snowParticleSystem.length; i++)
-        snowParticleSystem[i].setParticleWidth(10.0f);
+      break;
   }
+
+  mainCharacter.setSpriteScale(mainScale);
+  mainCharacter.setY(ground + extraGround);
+
+  for(int i = 0; i < snowParticleSystem.length; i++)
+    snowParticleSystem[i].setParticleWidth(snowWidth);
 }
 public void initBackground()
 {
