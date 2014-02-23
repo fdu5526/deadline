@@ -33,3 +33,10 @@ void initParticleSystem()
     snowParticleSystem[i] = new ParticleSystem(
                               new PVector(i*width/(snowParticleSystem.length - 1), -150), 10.0, false);
 }
+
+void initMusicFile()
+{
+  minim = new Minim (this);
+  pianoMusic = minim.loadFile ("GymnopedieNo1.mp3");
+  intenseMusic = minim.loadFile ("In a Heartbeat.mp3");
+}

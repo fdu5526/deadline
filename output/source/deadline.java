@@ -3,6 +3,8 @@ import processing.data.*;
 import processing.event.*; 
 import processing.opengl.*; 
 
+import ddf.minim.*; 
+
 import java.util.HashMap; 
 import java.util.ArrayList; 
 import java.io.File; 
@@ -14,6 +16,8 @@ import java.io.IOException;
 
 public class deadline extends PApplet {
 
+
+
 multiSpriteObject mainCharacter, backgroundSprites;
 nonmovingObject light, clothes;
 final int ground = 691;
@@ -21,6 +25,8 @@ final float characterSpeed = 30.0f;
 boolean inzone;
 ParticleSystem[] snowParticleSystem;
 
+Minim minim;
+AudioPlayer intenseMusic, pianoMusic;
 
 public void setup() {
   size(1600, 900);
@@ -32,14 +38,22 @@ public void setup() {
   inzone = false;
 
   initBackground();
+  initMusicFile();
   initNonmovableObjects();
   initParticleSystem();
-  initMainCharacter();  
+  initMainCharacter();
+
+  intenseMusic.play();
 }
 
 public void draw() { 
   
   drawBackground();
+
+  if(!(intenseMusic.isPlaying()))
+    intenseMusic.rewind();
+  if(!(pianoMusic.isPlaying()))
+    pianoMusic.rewind();
 
   // hit left of background
   if(mainCharacter.getX()+mainCharacter.getHspeed() < 10)
@@ -48,7 +62,7 @@ public void draw() {
     if(succ)
     {
       mainCharacter.setX(width - 50);
-      updateScale();
+      switchBackground();
     }
   }
   // hit right of background
@@ -58,7 +72,7 @@ public void draw() {
     if(succ)
     {
       mainCharacter.setX(10);
-      updateScale();
+      switchBackground();
     }
   }
   // normal movement
@@ -162,6 +176,7 @@ public void updateBackground()
 
       break;
     case 2: case 3:
+
       for(int i = 0; i < snowParticleSystem.length; i++)
       {
         snowParticleSystem[i].setShouldDraw(true);
@@ -181,27 +196,55 @@ public void updateBackground()
 /**
  * for updating the scale of sprites
  */
-public void updateScale()
+public void switchBackground()
 {
-  print(".");
   float mainScale = 1.0f;
   float snowWidth = 10.0f;
   int extraGround = 0;
 
   switch(backgroundSprites.getFrame()) {
+    case 0:
+      intenseMusic.play();
+      intenseMusic.setGain(0);
+      pianoMusic.pause();
+      break;
+
+    case 1:
+      intenseMusic.play();
+      intenseMusic.setGain(-5);
+      pianoMusic.pause();
+      break;
+
+    case 2:
+      pianoMusic.pause();
+      intenseMusic.pause();
+      break;
+
     case 3:
+      pianoMusic.play();
+      pianoMusic.setGain(-8);
+      intenseMusic.pause();
+
       mainScale = 0.75f;
       extraGround = 76;
       snowWidth = 7.5f;
       break;
 
     case 4:
+      pianoMusic.play();
+      pianoMusic.setGain(-5);
+      intenseMusic.pause();
+
       mainScale = 0.55f;
       extraGround = 103;
       snowWidth = 7.0f;
       break;
 
     case 5:
+      pianoMusic.play();
+      pianoMusic.setGain(0);
+      intenseMusic.pause();
+
       mainScale = 0.3f;
       extraGround = 129;
       snowWidth = 6.0f;
@@ -253,6 +296,13 @@ public void initParticleSystem()
   for(int i = 0; i < snowParticleSystem.length; i++)
     snowParticleSystem[i] = new ParticleSystem(
                               new PVector(i*width/(snowParticleSystem.length - 1), -150), 10.0f, false);
+}
+
+public void initMusicFile()
+{
+  minim = new Minim (this);
+  pianoMusic = minim.loadFile ("GymnopedieNo1.mp3");
+  intenseMusic = minim.loadFile ("In a Heartbeat.mp3");
 }
 class multiSpriteObject{
 	PImage[] spritesArray;

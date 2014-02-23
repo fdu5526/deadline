@@ -1,3 +1,5 @@
+import ddf.minim.*;
+
 multiSpriteObject mainCharacter, backgroundSprites;
 nonmovingObject light, clothes;
 final int ground = 691;
@@ -5,6 +7,8 @@ final float characterSpeed = 30.0;
 boolean inzone;
 ParticleSystem[] snowParticleSystem;
 
+Minim minim;
+AudioPlayer intenseMusic, pianoMusic;
 
 void setup() {
   size(1600, 900);
@@ -16,14 +20,22 @@ void setup() {
   inzone = false;
 
   initBackground();
+  initMusicFile();
   initNonmovableObjects();
   initParticleSystem();
-  initMainCharacter();  
+  initMainCharacter();
+
+  intenseMusic.play();
 }
 
 void draw() { 
   
   drawBackground();
+
+  if(!(intenseMusic.isPlaying()))
+    intenseMusic.rewind();
+  if(!(pianoMusic.isPlaying()))
+    pianoMusic.rewind();
 
   // hit left of background
   if(mainCharacter.getX()+mainCharacter.getHspeed() < 10)
@@ -32,7 +44,7 @@ void draw() {
     if(succ)
     {
       mainCharacter.setX(width - 50);
-      updateScale();
+      switchBackground();
     }
   }
   // hit right of background
@@ -42,7 +54,7 @@ void draw() {
     if(succ)
     {
       mainCharacter.setX(10);
-      updateScale();
+      switchBackground();
     }
   }
   // normal movement
@@ -146,6 +158,7 @@ void updateBackground()
 
       break;
     case 2: case 3:
+
       for(int i = 0; i < snowParticleSystem.length; i++)
       {
         snowParticleSystem[i].setShouldDraw(true);
@@ -165,27 +178,55 @@ void updateBackground()
 /**
  * for updating the scale of sprites
  */
-void updateScale()
+void switchBackground()
 {
-  print(".");
   float mainScale = 1.0;
   float snowWidth = 10.0;
   int extraGround = 0;
 
   switch(backgroundSprites.getFrame()) {
+    case 0:
+      intenseMusic.play();
+      intenseMusic.setGain(0);
+      pianoMusic.pause();
+      break;
+
+    case 1:
+      intenseMusic.play();
+      intenseMusic.setGain(-5);
+      pianoMusic.pause();
+      break;
+
+    case 2:
+      pianoMusic.pause();
+      intenseMusic.pause();
+      break;
+
     case 3:
+      pianoMusic.play();
+      pianoMusic.setGain(-8);
+      intenseMusic.pause();
+
       mainScale = 0.75;
       extraGround = 76;
       snowWidth = 7.5;
       break;
 
     case 4:
+      pianoMusic.play();
+      pianoMusic.setGain(-5);
+      intenseMusic.pause();
+
       mainScale = 0.55;
       extraGround = 103;
       snowWidth = 7.0;
       break;
 
     case 5:
+      pianoMusic.play();
+      pianoMusic.setGain(0);
+      intenseMusic.pause();
+
       mainScale = 0.3;
       extraGround = 129;
       snowWidth = 6.0;
