@@ -162,6 +162,9 @@ void updateBackground()
   }
 }
 
+/**
+ * for updating the scale of sprites
+ */
 void updateScale()
 {
   switch(backgroundSprites.getFrame()) {
@@ -174,6 +177,13 @@ void updateScale()
         snowParticleSystem[i].setParticleWidth(7.5);
       break;
     case 4:
+      mainCharacter.setSpriteScale(0.55);
+      mainCharacter.setY(ground + 103);
+
+      for(int i = 0; i < snowParticleSystem.length; i++)
+        snowParticleSystem[i].setParticleWidth(5.5);
+      break;
+    case 5:
       mainCharacter.setSpriteScale(0.3);
       mainCharacter.setY(ground + 129);
 

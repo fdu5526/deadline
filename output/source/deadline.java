@@ -178,6 +178,9 @@ public void updateBackground()
   }
 }
 
+/**
+ * for updating the scale of sprites
+ */
 public void updateScale()
 {
   switch(backgroundSprites.getFrame()) {
@@ -190,6 +193,13 @@ public void updateScale()
         snowParticleSystem[i].setParticleWidth(7.5f);
       break;
     case 4:
+      mainCharacter.setSpriteScale(0.55f);
+      mainCharacter.setY(ground + 103);
+
+      for(int i = 0; i < snowParticleSystem.length; i++)
+        snowParticleSystem[i].setParticleWidth(5.5f);
+      break;
+    case 5:
       mainCharacter.setSpriteScale(0.3f);
       mainCharacter.setY(ground + 129);
 
@@ -207,11 +217,11 @@ public void updateScale()
 }
 public void initBackground()
 {
-  PImage[] sprites = new PImage[5];
+  PImage[] sprites = new PImage[6];
 
   for(int i = 0; i < sprites.length; i++)
   {
-    sprites[i] = loadImage("background"+(i+1)+".jpg");
+    sprites[i] = loadImage("background"+(i)+".jpg");
   }
   backgroundSprites = new multiSpriteObject(0, height, sprites);
 }

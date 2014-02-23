@@ -1,10 +1,10 @@
 void initBackground()
 {
-  PImage[] sprites = new PImage[5];
+  PImage[] sprites = new PImage[6];
 
   for(int i = 0; i < sprites.length; i++)
   {
-    sprites[i] = loadImage("background"+(i+1)+".jpg");
+    sprites[i] = loadImage("background"+(i)+".jpg");
   }
   backgroundSprites = new multiSpriteObject(0, height, sprites);
 }
