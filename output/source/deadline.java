@@ -87,27 +87,54 @@ public void draw() {
 
   updateBackground();
 }
+class PanicWord{
+	String word;
+	int x, y, fontSize;
+	int r, g, b, t;
+	boolean shouldDraw;
+	float lifeStartMillis;
 
-public void keyPressed() {
-  if(key == 'a')
-  {
-    mainCharacter.setHspeed(-1.0f * characterSpeed * 
-                            mainCharacter.getSpriteScale());
-    mainCharacter.setDirection(-1.0f);
-  }
-  else if(key == 'd')
-  {
-    mainCharacter.setHspeed(characterSpeed * 
-                            mainCharacter.getSpriteScale());
-    mainCharacter.setDirection(1.0f);
-  }
-}
+	PanicWord(String _s)
+	{
+		t = 255;
+		setNewLocation();
+		word = _s;
+		shouldDraw = false;
+	}
 
-public void keyReleased() {
-  if(key == 'a')
-    mainCharacter.setHspeed(0.0f);
-  else if(key == 'd')
-    mainCharacter.setHspeed(0.0f);
+	public boolean getShouldDraw()
+	{
+		return shouldDraw;
+	}
+
+	public void setNewLocation()
+	{
+		x = (int)random(-10, width - 800);
+		y = (int)random(0, height - 10);
+		fontSize = (int)random(75, 175);
+		r = (int)random(175, 255);
+		g = (int)random(175, 255);
+		b = (int)random(175, 255);
+	}
+
+	public void setTransparency(int i)
+	{
+		t = i;
+	}
+
+	public void resetLifeStartMillis()
+	{
+		lifeStartMillis = millis();
+	}
+
+	public void draw(){
+		if(!(millis() - lifeStartMillis <= panicWordLifespan*2))
+			return;
+
+		textFont(createFont("Impact",16,true), fontSize);
+		fill(r,g,b, t);
+		text(word, x, y);
+	}
 }
 
 /**
@@ -288,99 +315,26 @@ public void switchBackground()
   }
 }
 
-/**
- * draws panic word
- */
-public void drawPanicWord()
-{
-  // set a new panic word to draw
-  if(millis() - newPanicWordTimer > panicWordLifespan - 150)
+public void keyPressed() {
+  if(key == 'a')
   {
-    showNewPanicWord();
-    newPanicWordTimer = millis();
+    mainCharacter.setHspeed(-1.0f * characterSpeed * 
+                            mainCharacter.getSpriteScale());
+    mainCharacter.setDirection(-1.0f);
   }
-
-  // draw all the panic words
-  for(int i = 0; i < panicWords.length; i++)
+  else if(key == 'd')
   {
-    panicWords[i].draw();
+    mainCharacter.setHspeed(characterSpeed * 
+                            mainCharacter.getSpriteScale());
+    mainCharacter.setDirection(1.0f);
   }
 }
 
-/**
- * change transparency of the panic words
- */
-public void setTransparencyPanicWord(int t)
-{
-  for(int i = 0; i < panicWords.length; i++)
-  {
-    panicWords[i].setTransparency(t);
-  }
-}
-/**
- * make a new panic word visible
- */
-public void showNewPanicWord()
-{
-  int i = (int)random(0, panicWords.length);
-  while(panicWords[i].getShouldDraw())
-  {
-    i = (int)random(0, panicWords.length);
-  }
-
-  PanicWord p = panicWords[i];
-  p.resetLifeStartMillis();
-  p.setNewLocation();
-
-}
-class PanicWord{
-	String word;
-	int x, y, fontSize;
-	int r, g, b, t;
-	boolean shouldDraw;
-	float lifeStartMillis;
-
-	PanicWord(String _s)
-	{
-		t = 255;
-		setNewLocation();
-		word = _s;
-		shouldDraw = false;
-	}
-
-	public boolean getShouldDraw()
-	{
-		return shouldDraw;
-	}
-
-	public void setNewLocation()
-	{
-		x = (int)random(-10, width - 800);
-		y = (int)random(0, height - 10);
-		fontSize = (int)random(75, 175);
-		r = (int)random(175, 255);
-		g = (int)random(175, 255);
-		b = (int)random(175, 255);
-	}
-
-	public void setTransparency(int i)
-	{
-		t = i;
-	}
-
-	public void resetLifeStartMillis()
-	{
-		lifeStartMillis = millis();
-	}
-
-	public void draw(){
-		if(!(millis() - lifeStartMillis <= panicWordLifespan*2))
-			return;
-
-		textFont(createFont("Impact",16,true), fontSize);
-		fill(r,g,b, t);
-		text(word, x, y);
-	}
+public void keyReleased() {
+  if(key == 'a')
+    mainCharacter.setHspeed(0.0f);
+  else if(key == 'd')
+    mainCharacter.setHspeed(0.0f);
 }
 public void initBackground()
 {
@@ -577,6 +531,52 @@ class nonmovingObject{
 		popMatrix();
 	}
 }
+
+/**
+ * draws panic word
+ */
+public void drawPanicWord()
+{
+  // set a new panic word to draw
+  if(millis() - newPanicWordTimer > panicWordLifespan - 150)
+  {
+    showNewPanicWord();
+    newPanicWordTimer = millis();
+  }
+
+  // draw all the panic words
+  for(int i = 0; i < panicWords.length; i++)
+  {
+    panicWords[i].draw();
+  }
+}
+
+/**
+ * change transparency of the panic words
+ */
+public void setTransparencyPanicWord(int t)
+{
+  for(int i = 0; i < panicWords.length; i++)
+  {
+    panicWords[i].setTransparency(t);
+  }
+}
+/**
+ * make a new panic word visible
+ */
+public void showNewPanicWord()
+{
+  int i = (int)random(0, panicWords.length);
+  while(panicWords[i].getShouldDraw())
+  {
+    i = (int)random(0, panicWords.length);
+  }
+
+  PanicWord p = panicWords[i];
+  p.resetLifeStartMillis();
+  p.setNewLocation();
+
+}
 class Particle {
   PVector location;
   PVector velocity;
@@ -674,13 +674,6 @@ class ParticleSystem {
       }
     }
   }
-}
-public float sign(float f)
-{
-	if(f < 0.0f)
-		return -1.0f;
-	else
-		return 1.0f;
 }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "deadline" };
