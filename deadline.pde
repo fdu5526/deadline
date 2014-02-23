@@ -93,13 +93,6 @@ void drawBackground()
 void updateBackground()
 {
 
-  // keep particle system running
-  for(int i = 0; i < snowParticleSystem.length; i++)
-  {
-    snowParticleSystem[i].addParticle();
-    snowParticleSystem[i].run();
-  }
-
   switch(backgroundSprites.getFrame()){
     case 0:
 
@@ -160,6 +153,13 @@ void updateBackground()
     default:
       break;
   }
+
+  // keep particle system running
+  for(int i = 0; i < snowParticleSystem.length; i++)
+  {
+    snowParticleSystem[i].addParticle();
+    snowParticleSystem[i].run();
+  }
 }
 
 /**
@@ -167,6 +167,7 @@ void updateBackground()
  */
 void updateScale()
 {
+  print(".");
   float mainScale = 1.0;
   float snowWidth = 10.0;
   int extraGround = 0;
@@ -177,7 +178,7 @@ void updateScale()
       extraGround = 76;
       snowWidth = 7.5;
       break;
-      
+
     case 4:
       mainScale = 0.55;
       extraGround = 103;
@@ -198,5 +199,7 @@ void updateScale()
   mainCharacter.setY(ground + extraGround);
 
   for(int i = 0; i < snowParticleSystem.length; i++)
+  {
     snowParticleSystem[i].setParticleWidth(snowWidth);
+  }
 }

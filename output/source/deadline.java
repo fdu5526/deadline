@@ -109,13 +109,6 @@ public void drawBackground()
 public void updateBackground()
 {
 
-  // keep particle system running
-  for(int i = 0; i < snowParticleSystem.length; i++)
-  {
-    snowParticleSystem[i].addParticle();
-    snowParticleSystem[i].run();
-  }
-
   switch(backgroundSprites.getFrame()){
     case 0:
 
@@ -176,6 +169,13 @@ public void updateBackground()
     default:
       break;
   }
+
+  // keep particle system running
+  for(int i = 0; i < snowParticleSystem.length; i++)
+  {
+    snowParticleSystem[i].addParticle();
+    snowParticleSystem[i].run();
+  }
 }
 
 /**
@@ -183,6 +183,7 @@ public void updateBackground()
  */
 public void updateScale()
 {
+  print(".");
   float mainScale = 1.0f;
   float snowWidth = 10.0f;
   int extraGround = 0;
@@ -193,6 +194,7 @@ public void updateScale()
       extraGround = 76;
       snowWidth = 7.5f;
       break;
+
     case 4:
       mainScale = 0.55f;
       extraGround = 103;
@@ -213,7 +215,9 @@ public void updateScale()
   mainCharacter.setY(ground + extraGround);
 
   for(int i = 0; i < snowParticleSystem.length; i++)
+  {
     snowParticleSystem[i].setParticleWidth(snowWidth);
+  }
 }
 public void initBackground()
 {
@@ -391,8 +395,8 @@ class Particle {
   float lifespan, particleWidth;
 
   Particle(PVector l, float s) {
-    acceleration = new PVector(0,0.1f);
-    velocity = new PVector(random(-5,5),1.0f);
+    acceleration = new PVector(0,0.05f);
+    velocity = new PVector(random(-5,5),0.5f);
     location = l.get();
     particleWidth = s;
     lifespan = 255.0f;
@@ -403,16 +407,16 @@ class Particle {
     display();
   }
 
+  public void setParticleWidth(float w)
+  {
+    particleWidth = w;
+  }
+
   // Method to update location
   public void update() {
     velocity.add(acceleration);
     location.add(velocity);
     lifespan -= 1.0f;
-  }
-
-  public void setParticleWidth(float s)
-  {
-    particleWidth = s;
   }
 
   // Method to display
@@ -425,7 +429,7 @@ class Particle {
   
   // Is the particle still useful?
   public boolean isDead() {
-    if (lifespan < 0.0f) {
+    if (lifespan < 0.0f || location.y > mainCharacter.y) {
       return true;
     } else {
       return false;
@@ -465,6 +469,7 @@ class ParticleSystem {
   {
     particleWidth = s;
   }
+
 
   public void run() {
     for (int i = particles.size()-1; i >= 0; i--) {

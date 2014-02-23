@@ -5,8 +5,8 @@ class Particle {
   float lifespan, particleWidth;
 
   Particle(PVector l, float s) {
-    acceleration = new PVector(0,0.1);
-    velocity = new PVector(random(-5,5),1.0);
+    acceleration = new PVector(0,0.05);
+    velocity = new PVector(random(-5,5),0.5);
     location = l.get();
     particleWidth = s;
     lifespan = 255.0;
@@ -17,16 +17,16 @@ class Particle {
     display();
   }
 
+  void setParticleWidth(float w)
+  {
+    particleWidth = w;
+  }
+
   // Method to update location
   void update() {
     velocity.add(acceleration);
     location.add(velocity);
     lifespan -= 1.0;
-  }
-
-  void setParticleWidth(float s)
-  {
-    particleWidth = s;
   }
 
   // Method to display
@@ -39,7 +39,7 @@ class Particle {
   
   // Is the particle still useful?
   boolean isDead() {
-    if (lifespan < 0.0) {
+    if (lifespan < 0.0 || location.y > mainCharacter.y) {
       return true;
     } else {
       return false;
@@ -79,6 +79,7 @@ class ParticleSystem {
   {
     particleWidth = s;
   }
+
 
   void run() {
     for (int i = particles.size()-1; i >= 0; i--) {
