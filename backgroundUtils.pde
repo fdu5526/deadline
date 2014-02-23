@@ -7,12 +7,13 @@ void drawBackground()
   backgroundSprites.draw();
   switch(backgroundSprites.getFrame()){
     case 0:
-      light.draw();
       drawPanicWord();
+      light.draw();
       break;
     case 1:
-      clothes.draw();
       drawPanicWord();
+      clothes.draw();
+      break;
     case 2:
       drawPanicWord();
     default:
@@ -35,12 +36,10 @@ void updateBackground()
          light.getX() <= mainCharacter.getX())
       {
         light.setShouldDraw(true);
-        inzone = true;
       }
       else
       {
         light.setShouldDraw(false);
-        inzone = false;
       }
 
       for(int i = 0; i < snowParticleSystem.length; i++)
@@ -52,26 +51,23 @@ void updateBackground()
     case 1:
 
       // for clothes
-      if(mainCharacter.getX() <= clothes.getX() + 50 && 
-         clothes.getX() - 50 <= mainCharacter.getX())
+      if(mainCharacter.getX() <= clothes.getX() + 120 && 
+         clothes.getX() - 120 <= mainCharacter.getX())
         {
-          if(inzone)
-            break;
 
-          if(mainCharacter.getFrame() == 0)
+          if(mainCharacter.getFrame() == 0 && userInteracted)
           {
             clothes.setShouldDraw(false);
             mainCharacter.setFrame(2);
           }
-          else
+          else if(userInteracted)
           {
             clothes.setShouldDraw(true);
             mainCharacter.setFrame(0); 
           }
-          inzone = true;
+          userInteracted = false;
         }
-      else
-        inzone = false;
+
 
       for(int i = 0; i < snowParticleSystem.length; i++)
       {

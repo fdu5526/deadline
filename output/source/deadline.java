@@ -20,13 +20,15 @@ public class deadline extends PApplet {
 
 multiSpriteObject mainCharacter, backgroundSprites;
 nonmovingObject light, clothes;
-final int ground = 691;
-final float characterSpeed = 30.0f;
-final int panicWordLifespan = 500;
-boolean inzone;
 ParticleSystem[] snowParticleSystem;
 PanicWord[] panicWords;
 float newPanicWordTimer;
+
+final int ground = 691;
+final float characterSpeed = 30.0f;
+final int panicWordLifespan = 500;
+
+boolean userInteracted;
 
 Minim minim;
 AudioPlayer intenseMusic, pianoMusic;
@@ -38,7 +40,7 @@ public void setup() {
   imageMode(CENTER);
   noStroke();
 
-  inzone = false;
+  userInteracted = false;
 
   initBackground();
   initMusicFile();
@@ -62,11 +64,16 @@ public void draw() {
   // hit left of background
   if(mainCharacter.getX()+mainCharacter.getHspeed() < 10)
   {
-    boolean succ = backgroundSprites.setFrame(backgroundSprites.getFrame() + 1);
-    if(succ)
+    if(mainCharacter.getFrame() != 2 &&
+      backgroundSprites.getFrame() == 1){}
+    else
     {
-      mainCharacter.setX(width - 50);
-      switchBackground();
+      boolean succ = backgroundSprites.setFrame(backgroundSprites.getFrame() + 1);
+      if(succ)
+      {
+        mainCharacter.setX(width - 50);
+        switchBackground();
+      }
     }
   }
   // hit right of background
@@ -145,12 +152,13 @@ public void drawBackground()
   backgroundSprites.draw();
   switch(backgroundSprites.getFrame()){
     case 0:
-      light.draw();
       drawPanicWord();
+      light.draw();
       break;
     case 1:
-      clothes.draw();
       drawPanicWord();
+      clothes.draw();
+      break;
     case 2:
       drawPanicWord();
     default:
@@ -173,12 +181,10 @@ public void updateBackground()
          light.getX() <= mainCharacter.getX())
       {
         light.setShouldDraw(true);
-        inzone = true;
       }
       else
       {
         light.setShouldDraw(false);
-        inzone = false;
       }
 
       for(int i = 0; i < snowParticleSystem.length; i++)
@@ -190,26 +196,23 @@ public void updateBackground()
     case 1:
 
       // for clothes
-      if(mainCharacter.getX() <= clothes.getX() + 50 && 
-         clothes.getX() - 50 <= mainCharacter.getX())
+      if(mainCharacter.getX() <= clothes.getX() + 120 && 
+         clothes.getX() - 120 <= mainCharacter.getX())
         {
-          if(inzone)
-            break;
 
-          if(mainCharacter.getFrame() == 0)
+          if(mainCharacter.getFrame() == 0 && userInteracted)
           {
             clothes.setShouldDraw(false);
             mainCharacter.setFrame(2);
           }
-          else
+          else if(userInteracted)
           {
             clothes.setShouldDraw(true);
             mainCharacter.setFrame(0); 
           }
-          inzone = true;
+          userInteracted = false;
         }
-      else
-        inzone = false;
+
 
       for(int i = 0; i < snowParticleSystem.length; i++)
       {
@@ -328,6 +331,10 @@ public void keyPressed() {
                             mainCharacter.getSpriteScale());
     mainCharacter.setDirection(1.0f);
   }
+  else if(key == ' ')
+  {
+      userInteracted = true;
+  }
 }
 
 public void keyReleased() {
@@ -335,6 +342,7 @@ public void keyReleased() {
     mainCharacter.setHspeed(0.0f);
   else if(key == 'd')
     mainCharacter.setHspeed(0.0f);
+  userInteracted = false;
 }
 public void initBackground()
 {
@@ -355,7 +363,7 @@ public void initNonmovableObjects()
 
 public void initMainCharacter()
 {
-  PImage[] sprites = new PImage[3];
+  PImage[] sprites = new PImage[4];
 
   for(int i = 0; i < sprites.length; i++)
   {

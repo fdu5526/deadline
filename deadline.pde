@@ -2,13 +2,15 @@ import ddf.minim.*;
 
 multiSpriteObject mainCharacter, backgroundSprites;
 nonmovingObject light, clothes;
-final int ground = 691;
-final float characterSpeed = 30.0;
-final int panicWordLifespan = 500;
-boolean inzone;
 ParticleSystem[] snowParticleSystem;
 PanicWord[] panicWords;
 float newPanicWordTimer;
+
+final int ground = 691;
+final float characterSpeed = 30.0;
+final int panicWordLifespan = 500;
+
+boolean userInteracted;
 
 Minim minim;
 AudioPlayer intenseMusic, pianoMusic;
@@ -20,7 +22,7 @@ void setup() {
   imageMode(CENTER);
   noStroke();
 
-  inzone = false;
+  userInteracted = false;
 
   initBackground();
   initMusicFile();
@@ -44,11 +46,16 @@ void draw() {
   // hit left of background
   if(mainCharacter.getX()+mainCharacter.getHspeed() < 10)
   {
-    boolean succ = backgroundSprites.setFrame(backgroundSprites.getFrame() + 1);
-    if(succ)
+    if(mainCharacter.getFrame() != 2 &&
+      backgroundSprites.getFrame() == 1){}
+    else
     {
-      mainCharacter.setX(width - 50);
-      switchBackground();
+      boolean succ = backgroundSprites.setFrame(backgroundSprites.getFrame() + 1);
+      if(succ)
+      {
+        mainCharacter.setX(width - 50);
+        switchBackground();
+      }
     }
   }
   // hit right of background

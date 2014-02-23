@@ -12,6 +12,10 @@ void keyPressed() {
                             mainCharacter.getSpriteScale());
     mainCharacter.setDirection(1.0);
   }
+  else if(key == ' ')
+  {
+      userInteracted = true;
+  }
 }
 
 void keyReleased() {
@@ -19,4 +23,5 @@ void keyReleased() {
     mainCharacter.setHspeed(0.0);
   else if(key == 'd')
     mainCharacter.setHspeed(0.0);
+  userInteracted = false;
 }

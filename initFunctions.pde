@@ -17,7 +17,7 @@ void initNonmovableObjects()
 
 void initMainCharacter()
 {
-  PImage[] sprites = new PImage[3];
+  PImage[] sprites = new PImage[4];
 
   for(int i = 0; i < sprites.length; i++)
   {
