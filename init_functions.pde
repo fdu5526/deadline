@@ -1,6 +1,6 @@
 void initBackground()
 {
-  PImage[] sprites = new PImage[6];
+  PImage[] sprites = new PImage[7];
 
   for(int i = 0; i < sprites.length; i++)
   {
@@ -37,6 +37,25 @@ void initParticleSystem()
 void initMusicFile()
 {
   minim = new Minim (this);
-  pianoMusic = minim.loadFile ("GymnopedieNo1.mp3");
+  pianoMusic   = minim.loadFile ("GymnopedieNo1.mp3");
   intenseMusic = minim.loadFile ("In a Heartbeat.mp3");
+}
+
+void initPanicWords()
+{
+  newPanicWordTimer = millis();
+
+  String[] panicStrings = {"OH NO", "GO GO GO", "DEADLINE LOOMS",
+                           "GPA GOING DOWN", "NO SLEEP TONIGHT",
+                           "I'M GOING TO FAIL", "WORK WORK WORK",
+                           "DON'T SLACK OFF", "NO TIME LEFT",
+                           "DON'T SOCIALIZE", "NO TIME FOR FUN",
+                           "RUNNING OUT OF TIME", "SUFFER SUFFER SUFFER",
+                           "GOING TO BE LATE", "CAN'T PASS"};
+  panicWords = new PanicWord[panicStrings.length];
+
+  for(int i = 0; i < panicWords.length; i++)
+  {
+    panicWords[i] = new PanicWord(panicStrings[i]);
+  }
 }

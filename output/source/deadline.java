@@ -22,8 +22,11 @@ multiSpriteObject mainCharacter, backgroundSprites;
 nonmovingObject light, clothes;
 final int ground = 691;
 final float characterSpeed = 30.0f;
+final int panicWordLifespan = 500;
 boolean inzone;
 ParticleSystem[] snowParticleSystem;
+PanicWord[] panicWords;
+float newPanicWordTimer;
 
 Minim minim;
 AudioPlayer intenseMusic, pianoMusic;
@@ -39,6 +42,7 @@ public void setup() {
 
   initBackground();
   initMusicFile();
+  initPanicWords();
   initNonmovableObjects();
   initParticleSystem();
   initMainCharacter();
@@ -106,20 +110,31 @@ public void keyReleased() {
     mainCharacter.setHspeed(0.0f);
 }
 
+/**
+ * draw each background specific objects
+ */
 public void drawBackground()
 {
   backgroundSprites.draw();
   switch(backgroundSprites.getFrame()){
     case 0:
       light.draw();
+      drawPanicWord();
       break;
     case 1:
       clothes.draw();
+      drawPanicWord();
+    case 2:
+      drawPanicWord();
     default:
       break;
   }
 }
 
+/**
+ * determine what to draw, 
+ * depending on which scene we are on
+ */
 public void updateBackground()
 {
 
@@ -175,12 +190,14 @@ public void updateBackground()
       }
 
       break;
-    case 2: case 3:
+    case 3: case 4: case 5: case 6:
 
       for(int i = 0; i < snowParticleSystem.length; i++)
       {
         snowParticleSystem[i].setShouldDraw(true);
       }
+      break;
+
     default:
       break;
   }
@@ -207,20 +224,28 @@ public void switchBackground()
       intenseMusic.play();
       intenseMusic.setGain(0);
       pianoMusic.pause();
+      setTransparencyPanicWord(200);
       break;
 
     case 1:
       intenseMusic.play();
       intenseMusic.setGain(-5);
       pianoMusic.pause();
+      setTransparencyPanicWord(100);
       break;
 
     case 2:
+      intenseMusic.play();
+      intenseMusic.setGain(-20);
+      setTransparencyPanicWord(20);
+      break;
+
+    case 3:
       pianoMusic.pause();
       intenseMusic.pause();
       break;
 
-    case 3:
+    case 4:
       pianoMusic.play();
       pianoMusic.setGain(-8);
       intenseMusic.pause();
@@ -230,7 +255,7 @@ public void switchBackground()
       snowWidth = 7.5f;
       break;
 
-    case 4:
+    case 5:
       pianoMusic.play();
       pianoMusic.setGain(-5);
       intenseMusic.pause();
@@ -240,7 +265,7 @@ public void switchBackground()
       snowWidth = 7.0f;
       break;
 
-    case 5:
+    case 6:
       pianoMusic.play();
       pianoMusic.setGain(0);
       intenseMusic.pause();
@@ -262,9 +287,104 @@ public void switchBackground()
     snowParticleSystem[i].setParticleWidth(snowWidth);
   }
 }
+
+/**
+ * draws panic word
+ */
+public void drawPanicWord()
+{
+  // set a new panic word to draw
+  if(millis() - newPanicWordTimer > panicWordLifespan - 150)
+  {
+    showNewPanicWord();
+    newPanicWordTimer = millis();
+  }
+
+  // draw all the panic words
+  for(int i = 0; i < panicWords.length; i++)
+  {
+    panicWords[i].draw();
+  }
+}
+
+/**
+ * change transparency of the panic words
+ */
+public void setTransparencyPanicWord(int t)
+{
+  for(int i = 0; i < panicWords.length; i++)
+  {
+    panicWords[i].setTransparency(t);
+  }
+}
+/**
+ * make a new panic word visible
+ */
+public void showNewPanicWord()
+{
+  int i = (int)random(0, panicWords.length);
+  while(panicWords[i].getShouldDraw())
+  {
+    i = (int)random(0, panicWords.length);
+  }
+
+  PanicWord p = panicWords[i];
+  p.resetLifeStartMillis();
+  p.setNewLocation();
+
+}
+class PanicWord{
+	String word;
+	int x, y, fontSize;
+	int r, g, b, t;
+	boolean shouldDraw;
+	float lifeStartMillis;
+
+	PanicWord(String _s)
+	{
+		t = 255;
+		setNewLocation();
+		word = _s;
+		shouldDraw = false;
+	}
+
+	public boolean getShouldDraw()
+	{
+		return shouldDraw;
+	}
+
+	public void setNewLocation()
+	{
+		x = (int)random(-10, width - 800);
+		y = (int)random(0, height - 10);
+		fontSize = (int)random(75, 175);
+		r = (int)random(175, 255);
+		g = (int)random(175, 255);
+		b = (int)random(175, 255);
+	}
+
+	public void setTransparency(int i)
+	{
+		t = i;
+	}
+
+	public void resetLifeStartMillis()
+	{
+		lifeStartMillis = millis();
+	}
+
+	public void draw(){
+		if(!(millis() - lifeStartMillis <= panicWordLifespan*2))
+			return;
+
+		textFont(createFont("Impact",16,true), fontSize);
+		fill(r,g,b, t);
+		text(word, x, y);
+	}
+}
 public void initBackground()
 {
-  PImage[] sprites = new PImage[6];
+  PImage[] sprites = new PImage[7];
 
   for(int i = 0; i < sprites.length; i++)
   {
@@ -301,8 +421,27 @@ public void initParticleSystem()
 public void initMusicFile()
 {
   minim = new Minim (this);
-  pianoMusic = minim.loadFile ("GymnopedieNo1.mp3");
+  pianoMusic   = minim.loadFile ("GymnopedieNo1.mp3");
   intenseMusic = minim.loadFile ("In a Heartbeat.mp3");
+}
+
+public void initPanicWords()
+{
+  newPanicWordTimer = millis();
+
+  String[] panicStrings = {"OH NO", "GO GO GO", "DEADLINE LOOMS",
+                           "GPA GOING DOWN", "NO SLEEP TONIGHT",
+                           "I'M GOING TO FAIL", "WORK WORK WORK",
+                           "DON'T SLACK OFF", "NO TIME LEFT",
+                           "DON'T SOCIALIZE", "NO TIME FOR FUN",
+                           "RUNNING OUT OF TIME", "SUFFER SUFFER SUFFER",
+                           "GOING TO BE LATE", "CAN'T PASS"};
+  panicWords = new PanicWord[panicStrings.length];
+
+  for(int i = 0; i < panicWords.length; i++)
+  {
+    panicWords[i] = new PanicWord(panicStrings[i]);
+  }
 }
 class multiSpriteObject{
 	PImage[] spritesArray;
