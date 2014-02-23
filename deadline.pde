@@ -10,7 +10,7 @@ final int ground = 691;
 final float characterSpeed = 30.0;
 final int panicWordLifespan = 500;
 
-boolean userInteracted;
+boolean userInteracted, satDown;
 
 Minim minim;
 AudioPlayer intenseMusic, pianoMusic;
@@ -23,6 +23,7 @@ void setup() {
   noStroke();
 
   userInteracted = false;
+  satDown = false;
 
   initBackground();
   initMusicFile();
@@ -73,6 +74,11 @@ void draw() {
     mainCharacter.update();
 
   mainCharacter.draw();
+
+  if(satDown)
+  {
+    drawSourceCode();
+  }
 
   updateBackground();
 }

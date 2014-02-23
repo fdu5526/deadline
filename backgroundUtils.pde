@@ -35,7 +35,28 @@ void updateBackground()
       if(mainCharacter.getX() <= light.getX() + 200 && 
          light.getX() <= mainCharacter.getX())
       {
-        light.setShouldDraw(true);
+        if(userInteracted)
+        {
+          if(mainCharacter.getFrame() == 0 || 
+             mainCharacter.getFrame() == 2)
+          {
+            mainCharacter.setFrame(mainCharacter.getFrame() + 1);
+            mainCharacter.setX(787);
+            mainCharacter.setHspeed(0.0);
+            mainCharacter.setDirection(1.0);
+
+            light.setShouldDraw(true);
+            satDown = true;
+          }
+          else
+          {
+            mainCharacter.setFrame(mainCharacter.getFrame() - 1);
+            light.setShouldDraw(false);
+            satDown = false;
+          }
+
+          userInteracted = false;
+        }
       }
       else
       {

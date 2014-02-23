@@ -21,7 +21,7 @@ void initMainCharacter()
 
   for(int i = 0; i < sprites.length; i++)
   {
-    sprites[i] = loadImage("main_"+(i+1)+".png");
+    sprites[i] = loadImage("main_"+(i)+".png");
   }
   mainCharacter = new multiSpriteObject(width/3, ground, sprites);
 }

@@ -28,7 +28,7 @@ final int ground = 691;
 final float characterSpeed = 30.0f;
 final int panicWordLifespan = 500;
 
-boolean userInteracted;
+boolean userInteracted, satDown;
 
 Minim minim;
 AudioPlayer intenseMusic, pianoMusic;
@@ -41,6 +41,7 @@ public void setup() {
   noStroke();
 
   userInteracted = false;
+  satDown = false;
 
   initBackground();
   initMusicFile();
@@ -91,6 +92,11 @@ public void draw() {
     mainCharacter.update();
 
   mainCharacter.draw();
+
+  if(satDown)
+  {
+    drawSourceCode();
+  }
 
   updateBackground();
 }
@@ -180,7 +186,28 @@ public void updateBackground()
       if(mainCharacter.getX() <= light.getX() + 200 && 
          light.getX() <= mainCharacter.getX())
       {
-        light.setShouldDraw(true);
+        if(userInteracted)
+        {
+          if(mainCharacter.getFrame() == 0 || 
+             mainCharacter.getFrame() == 2)
+          {
+            mainCharacter.setFrame(mainCharacter.getFrame() + 1);
+            mainCharacter.setX(787);
+            mainCharacter.setHspeed(0.0f);
+            mainCharacter.setDirection(1.0f);
+
+            light.setShouldDraw(true);
+            satDown = true;
+          }
+          else
+          {
+            mainCharacter.setFrame(mainCharacter.getFrame() - 1);
+            light.setShouldDraw(false);
+            satDown = false;
+          }
+
+          userInteracted = false;
+        }
       }
       else
       {
@@ -317,19 +344,34 @@ public void switchBackground()
     snowParticleSystem[i].setParticleWidth(snowWidth);
   }
 }
+public void drawSourceCode()
+{
+	fill(0, 200);
+    rect(width/4, 0, 2*width/4, height);
+}
 
 public void keyPressed() {
   if(key == 'a')
   {
-    mainCharacter.setHspeed(-1.0f * characterSpeed * 
-                            mainCharacter.getSpriteScale());
-    mainCharacter.setDirection(-1.0f);
+    if(satDown)
+    {}
+    else
+    {
+      mainCharacter.setHspeed(-1.0f * characterSpeed * 
+                              mainCharacter.getSpriteScale());
+      mainCharacter.setDirection(-1.0f);
+    }
   }
   else if(key == 'd')
   {
-    mainCharacter.setHspeed(characterSpeed * 
-                            mainCharacter.getSpriteScale());
-    mainCharacter.setDirection(1.0f);
+    if(satDown)
+    {}
+    else
+    {
+      mainCharacter.setHspeed(characterSpeed * 
+                              mainCharacter.getSpriteScale());
+      mainCharacter.setDirection(1.0f);
+    }
   }
   else if(key == ' ')
   {
@@ -367,7 +409,7 @@ public void initMainCharacter()
 
   for(int i = 0; i < sprites.length; i++)
   {
-    sprites[i] = loadImage("main_"+(i+1)+".png");
+    sprites[i] = loadImage("main_"+(i)+".png");
   }
   mainCharacter = new multiSpriteObject(width/3, ground, sprites);
 }
