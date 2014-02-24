@@ -1,6 +1,6 @@
 void initBackground()
 {
-  PImage[] sprites = new PImage[7];
+  PImage[] sprites = new PImage[10];
 
   for(int i = 0; i < sprites.length; i++)
   {

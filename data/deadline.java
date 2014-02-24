@@ -19,14 +19,17 @@ public class deadline extends PApplet {
 
 
 multiSpriteObject mainCharacter, backgroundSprites;
-nonmovingObject light, clothes;
+nonmovingObject light, clothes, spacebarHint1, spacebarHint2, adHint;
 ParticleSystem[] snowParticleSystem;
 PanicWord[] panicWords;
 float newPanicWordTimer;
+SourceCode sourceCode;
 
 final int ground = 691;
-final float characterSpeed = 30.0f;
+final float characterSpeed = 100.0f;
 final int panicWordLifespan = 500;
+final PFont impactFont = createFont("Impact",16,true);
+final PFont codeFont = createFont("Consolas",16,true);
 
 boolean userInteracted, satDown;
 
@@ -46,6 +49,7 @@ public void setup() {
   initBackground();
   initMusicFile();
   initPanicWords();
+  initSourceCode();
   initNonmovableObjects();
   initParticleSystem();
   initMainCharacter();
@@ -57,6 +61,7 @@ public void draw() {
   
   drawBackground();
 
+  // loop music
   if(!(intenseMusic.isPlaying()))
     intenseMusic.rewind();
   if(!(pianoMusic.isPlaying()))
@@ -91,13 +96,16 @@ public void draw() {
   else
     mainCharacter.update();
 
+  // draws the main character
   mainCharacter.draw();
 
+  // only draw source code if we are sitting down
   if(satDown)
   {
     drawSourceCode();
   }
 
+  // update states of everything in background
   updateBackground();
 }
 class PanicWord{
@@ -144,7 +152,7 @@ class PanicWord{
 		if(!(millis() - lifeStartMillis <= panicWordLifespan*2))
 			return;
 
-		textFont(createFont("Impact",16,true), fontSize);
+		textFont(impactFont, fontSize);
 		fill(r,g,b, t);
 		text(word, x, y);
 	}
@@ -160,10 +168,13 @@ public void drawBackground()
     case 0:
       drawPanicWord();
       light.draw();
+      spacebarHint1.draw();
+      adHint.draw();
       break;
     case 1:
       drawPanicWord();
       clothes.draw();
+      spacebarHint2.draw();
       break;
     case 2:
       drawPanicWord();
@@ -247,7 +258,7 @@ public void updateBackground()
       }
 
       break;
-    case 3: case 4: case 5: case 6:
+    case 2: case 3: case 4: case 5: case 6:
 
       for(int i = 0; i < snowParticleSystem.length; i++)
       {
@@ -332,6 +343,36 @@ public void switchBackground()
       snowWidth = 6.0f;
       break;
 
+    case 7:
+      pianoMusic.play();
+      pianoMusic.setGain(0);
+      intenseMusic.pause();
+
+      mainScale = 0.2f;
+      extraGround = 172;
+      snowWidth = 5.0f;
+      break;
+
+    case 8:
+      pianoMusic.play();
+      pianoMusic.setGain(0);
+      intenseMusic.pause();
+
+      mainScale = 0.06f;
+      extraGround = 180;
+      snowWidth = 4.0f;
+      break;
+
+    case 9:
+      pianoMusic.play();
+      pianoMusic.setGain(0);
+      intenseMusic.pause();
+
+      mainScale = 0.06f;
+      extraGround = 400;
+      snowWidth = 2.0f;
+      break;
+
     default:
       break;
   }
@@ -348,15 +389,31 @@ class SourceCode{
 	String code;
 	int index;
 
-	SourceCode(String s, int i)
+	SourceCode(String s)
 	{
 		code = s;
-		index = i;
+		index = 0;
 	}
 
+	public void increaseIndex()
+	{
+		if(index < code.length())
+			index++;
+	}
 	public void draw()
 	{
+		fill(255);
+		textFont(codeFont, 20);
 
+		String sub = code.substring(0, index);
+		int linenumber = sub.length() - 
+						 sub.replace("\n", "").length();
+		if(linenumber > 20)
+			text(sub, width/4 + 20, 
+				 20 - (linenumber - 20)*26);
+		else
+			text(sub, width/4 + 20, 
+			 20);
 	}
 }
 
@@ -365,13 +422,17 @@ public void drawSourceCode()
 {
 	fill(0, 200);
     rect(width/4, 0, 2*width/4, height);
+
+    sourceCode.draw();
 }
 
 public void keyPressed() {
   if(key == 'a')
   {
     if(satDown)
-    {}
+    {
+      sourceCode.increaseIndex();
+    }
     else
     {
       mainCharacter.setHspeed(-1.0f * characterSpeed * 
@@ -382,7 +443,9 @@ public void keyPressed() {
   else if(key == 'd')
   {
     if(satDown)
-    {}
+    {
+      sourceCode.increaseIndex();
+    }
     else
     {
       mainCharacter.setHspeed(characterSpeed * 
@@ -405,7 +468,7 @@ public void keyReleased() {
 }
 public void initBackground()
 {
-  PImage[] sprites = new PImage[7];
+  PImage[] sprites = new PImage[10];
 
   for(int i = 0; i < sprites.length; i++)
   {
@@ -418,6 +481,9 @@ public void initNonmovableObjects()
 {
   light = new nonmovingObject(677, 474, loadImage("light.png"));
   clothes = new nonmovingObject(980, 552, loadImage("clothes.png"));
+  spacebarHint1 = new nonmovingObject(743, 291, loadImage("spacebar.png"));
+  spacebarHint2 = new nonmovingObject(865, 111, loadImage("spacebar.png"));
+  adHint = new nonmovingObject(width/6, 291, loadImage("adbutton.png"));
 }
 
 public void initMainCharacter()
@@ -428,7 +494,7 @@ public void initMainCharacter()
   {
     sprites[i] = loadImage("main_"+(i)+".png");
   }
-  mainCharacter = new multiSpriteObject(width/3, ground, sprites);
+  mainCharacter = new multiSpriteObject(width/6, ground, sprites);
 }
 
 public void initParticleSystem()
@@ -463,6 +529,24 @@ public void initPanicWords()
   {
     panicWords[i] = new PanicWord(panicStrings[i]);
   }
+}
+
+public void initSourceCode()
+{
+  String codeString = "";
+  try {
+        BufferedReader br = createReader("deadline.java");
+        StringBuilder sb = new StringBuilder();
+        String line = br.readLine();
+
+        while (line != null) {
+            sb.append(line + "\n");
+            line = br.readLine();
+        }
+        codeString = sb.toString();
+    }
+    catch (IOException e){}
+    sourceCode = new SourceCode(codeString);
 }
 class multiSpriteObject{
 	PImage[] spritesArray;
@@ -567,6 +651,7 @@ class multiSpriteObject{
 class nonmovingObject{
 	PImage sprite;
 	int x, y;
+	float lifeStartMillis;
 	boolean shouldDraw;
 
 	nonmovingObject(int _x, int _y, PImage _sprite)

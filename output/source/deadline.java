@@ -26,7 +26,7 @@ float newPanicWordTimer;
 SourceCode sourceCode;
 
 final int ground = 691;
-final float characterSpeed = 15.0f;
+final float characterSpeed = 100.0f;
 final int panicWordLifespan = 500;
 final PFont impactFont = createFont("Impact",16,true);
 final PFont codeFont = createFont("Consolas",16,true);
@@ -343,6 +343,36 @@ public void switchBackground()
       snowWidth = 6.0f;
       break;
 
+    case 7:
+      pianoMusic.play();
+      pianoMusic.setGain(0);
+      intenseMusic.pause();
+
+      mainScale = 0.2f;
+      extraGround = 172;
+      snowWidth = 5.0f;
+      break;
+
+    case 8:
+      pianoMusic.play();
+      pianoMusic.setGain(0);
+      intenseMusic.pause();
+
+      mainScale = 0.06f;
+      extraGround = 180;
+      snowWidth = 4.0f;
+      break;
+
+    case 9:
+      pianoMusic.play();
+      pianoMusic.setGain(0);
+      intenseMusic.pause();
+
+      mainScale = 0.06f;
+      extraGround = 400;
+      snowWidth = 2.0f;
+      break;
+
     default:
       break;
   }
@@ -436,10 +466,9 @@ public void keyReleased() {
     mainCharacter.setHspeed(0.0f);
   userInteracted = false;
 }
-
 public void initBackground()
 {
-  PImage[] sprites = new PImage[7];
+  PImage[] sprites = new PImage[10];
 
   for(int i = 0; i < sprites.length; i++)
   {

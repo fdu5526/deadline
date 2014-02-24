@@ -184,6 +184,36 @@ void switchBackground()
       snowWidth = 6.0;
       break;
 
+    case 7:
+      pianoMusic.play();
+      pianoMusic.setGain(0);
+      intenseMusic.pause();
+
+      mainScale = 0.2;
+      extraGround = 172;
+      snowWidth = 5.0;
+      break;
+
+    case 8:
+      pianoMusic.play();
+      pianoMusic.setGain(0);
+      intenseMusic.pause();
+
+      mainScale = 0.06;
+      extraGround = 180;
+      snowWidth = 4.0;
+      break;
+
+    case 9:
+      pianoMusic.play();
+      pianoMusic.setGain(0);
+      intenseMusic.pause();
+
+      mainScale = 0.06;
+      extraGround = 400;
+      snowWidth = 2.0;
+      break;
+
     default:
       break;
   }
