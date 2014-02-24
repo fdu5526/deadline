@@ -8,7 +8,7 @@ float newPanicWordTimer;
 SourceCode sourceCode;
 
 final int ground = 691;
-final float characterSpeed = 100.0;
+final float characterSpeed = 30.0;
 final int panicWordLifespan = 500;
 final PFont impactFont = createFont("Impact",16,true);
 final PFont codeFont = createFont("Consolas",16,true);
