@@ -11,14 +11,12 @@ void keyPressed() {
   }
   else if(key == 'a')
   { 
-    mainCharacter.setHspeed(-1.0 * characterSpeed * 
-                              mainCharacter.getSpriteScale());
+    mainCharacter.setHspeed(-1.0 * characterSpeed);
     mainCharacter.setDirection(-1.0);
   }
   else if(key == 'd')
   {
-    mainCharacter.setHspeed(characterSpeed * 
-                              mainCharacter.getSpriteScale());
+    mainCharacter.setHspeed(characterSpeed);
     mainCharacter.setDirection(1.0);  
   }
 }

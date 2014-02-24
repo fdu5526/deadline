@@ -86,7 +86,7 @@ class multiSpriteObject{
 	void update()
 	{
 		if(canMove)
-			x += hspeed;
+			x += hspeed * spriteScale;
 	}
 	
 	void draw(){

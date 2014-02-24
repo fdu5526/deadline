@@ -438,14 +438,12 @@ public void keyPressed() {
   }
   else if(key == 'a')
   { 
-    mainCharacter.setHspeed(-1.0f * characterSpeed * 
-                              mainCharacter.getSpriteScale());
+    mainCharacter.setHspeed(-1.0f * characterSpeed);
     mainCharacter.setDirection(-1.0f);
   }
   else if(key == 'd')
   {
-    mainCharacter.setHspeed(characterSpeed * 
-                              mainCharacter.getSpriteScale());
+    mainCharacter.setHspeed(characterSpeed);
     mainCharacter.setDirection(1.0f);  
   }
 }
@@ -627,7 +625,7 @@ class multiSpriteObject{
 	public void update()
 	{
 		if(canMove)
-			x += hspeed;
+			x += hspeed * spriteScale;
 	}
 	
 	public void draw(){
