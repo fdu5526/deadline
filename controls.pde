@@ -1,34 +1,25 @@
 
 void keyPressed() {
-  if(key == 'a')
+
+  if(key == ' ')
   {
-    if(satDown)
-    {
-      sourceCode.increaseIndex();
-    }
-    else
-    {
-      mainCharacter.setHspeed(-1.0 * characterSpeed * 
+    userInteracted = true;
+  }
+  else if(satDown)
+  {
+    sourceCode.increaseIndex();
+  }
+  else if(key == 'a')
+  { 
+    mainCharacter.setHspeed(-1.0 * characterSpeed * 
                               mainCharacter.getSpriteScale());
-      mainCharacter.setDirection(-1.0);
-    }
+    mainCharacter.setDirection(-1.0);
   }
   else if(key == 'd')
   {
-    if(satDown)
-    {
-      sourceCode.increaseIndex();
-    }
-    else
-    {
-      mainCharacter.setHspeed(characterSpeed * 
+    mainCharacter.setHspeed(characterSpeed * 
                               mainCharacter.getSpriteScale());
-      mainCharacter.setDirection(1.0);
-    }
-  }
-  else if(key == ' ')
-  {
-      userInteracted = true;
+    mainCharacter.setDirection(1.0);  
   }
 }
 

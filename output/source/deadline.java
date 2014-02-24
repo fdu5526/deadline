@@ -427,35 +427,26 @@ public void drawSourceCode()
 }
 
 public void keyPressed() {
-  if(key == 'a')
+
+  if(key == ' ')
   {
-    if(satDown)
-    {
-      sourceCode.increaseIndex();
-    }
-    else
-    {
-      mainCharacter.setHspeed(-1.0f * characterSpeed * 
+    userInteracted = true;
+  }
+  else if(satDown)
+  {
+    sourceCode.increaseIndex();
+  }
+  else if(key == 'a')
+  { 
+    mainCharacter.setHspeed(-1.0f * characterSpeed * 
                               mainCharacter.getSpriteScale());
-      mainCharacter.setDirection(-1.0f);
-    }
+    mainCharacter.setDirection(-1.0f);
   }
   else if(key == 'd')
   {
-    if(satDown)
-    {
-      sourceCode.increaseIndex();
-    }
-    else
-    {
-      mainCharacter.setHspeed(characterSpeed * 
+    mainCharacter.setHspeed(characterSpeed * 
                               mainCharacter.getSpriteScale());
-      mainCharacter.setDirection(1.0f);
-    }
-  }
-  else if(key == ' ')
-  {
-      userInteracted = true;
+    mainCharacter.setDirection(1.0f);  
   }
 }
 

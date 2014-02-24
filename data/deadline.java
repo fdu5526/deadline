@@ -1,23 +1,11 @@
-import processing.core.*; 
-import processing.data.*; 
-import processing.event.*; 
-import processing.opengl.*; 
-
+import processing.*;
 import ddf.minim.*; 
-
 import java.util.HashMap; 
 import java.util.ArrayList; 
-import java.io.File; 
-import java.io.BufferedReader; 
-import java.io.PrintWriter; 
-import java.io.InputStream; 
-import java.io.OutputStream; 
-import java.io.IOException; 
+import java.io.*; 
 
 public class deadline extends PApplet {
-
-
-
+  
 multiSpriteObject mainCharacter, backgroundSprites;
 nonmovingObject light, clothes, spacebarHint1, spacebarHint2, adHint;
 ParticleSystem[] snowParticleSystem;
@@ -26,7 +14,7 @@ float newPanicWordTimer;
 SourceCode sourceCode;
 
 final int ground = 691;
-final float characterSpeed = 100.0f;
+final float characterSpeed = 30.0f;
 final int panicWordLifespan = 500;
 final PFont impactFont = createFont("Impact",16,true);
 final PFont codeFont = createFont("Consolas",16,true);
@@ -427,35 +415,26 @@ public void drawSourceCode()
 }
 
 public void keyPressed() {
-  if(key == 'a')
+
+  if(key == ' ')
   {
-    if(satDown)
-    {
-      sourceCode.increaseIndex();
-    }
-    else
-    {
-      mainCharacter.setHspeed(-1.0f * characterSpeed * 
+    userInteracted = true;
+  }
+  else if(satDown)
+  {
+    sourceCode.increaseIndex();
+  }
+  else if(key == 'a')
+  { 
+    mainCharacter.setHspeed(-1.0f * characterSpeed * 
                               mainCharacter.getSpriteScale());
-      mainCharacter.setDirection(-1.0f);
-    }
+    mainCharacter.setDirection(-1.0f);
   }
   else if(key == 'd')
   {
-    if(satDown)
-    {
-      sourceCode.increaseIndex();
-    }
-    else
-    {
-      mainCharacter.setHspeed(characterSpeed * 
+    mainCharacter.setHspeed(characterSpeed * 
                               mainCharacter.getSpriteScale());
-      mainCharacter.setDirection(1.0f);
-    }
-  }
-  else if(key == ' ')
-  {
-      userInteracted = true;
+    mainCharacter.setDirection(1.0f);  
   }
 }
 
