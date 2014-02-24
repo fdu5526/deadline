@@ -402,7 +402,7 @@ class SourceCode{
 	}
 	public void draw()
 	{
-		fill(255);
+		fill(0, 255, 0);
 		textFont(codeFont, 20);
 
 		String sub = code.substring(0, index);

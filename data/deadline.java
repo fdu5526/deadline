@@ -1,5 +1,5 @@
 import processing.*;
-import ddf.minim.*; 
+import ddf.minim.*;
 import java.util.HashMap; 
 import java.util.ArrayList; 
 import java.io.*;
@@ -390,7 +390,7 @@ class SourceCode{
 	}
 	public void draw()
 	{
-		fill(255);
+		fill(0, 255, 0);
 		textFont(codeFont, 20);
 
 		String sub = code.substring(0, index);
@@ -680,9 +680,6 @@ public void drawPanicWord()
   }
 }
 
-/**
- * change transparency of the panic words
- */
 public void setTransparencyPanicWord(int t)
 {
   for(int i = 0; i < panicWords.length; i++)
@@ -690,9 +687,7 @@ public void setTransparencyPanicWord(int t)
     panicWords[i].setTransparency(t);
   }
 }
-/**
- * make a new panic word visible
- */
+
 public void showNewPanicWord()
 {
   int i = (int)random(0, panicWords.length);
@@ -755,11 +750,6 @@ class Particle {
   }
 }
 
-
-
-
-// A class to describe a group of Particles
-// An ArrayList is used to manage the list of Particles 
 
 class ParticleSystem {
   ArrayList<Particle> particles;
